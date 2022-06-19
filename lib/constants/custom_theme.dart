@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
-const defaultTestStyle = TextStyle(
+const defaultTextStyle = TextStyle(
   color: Colors.white,
   fontSize: 30.0,
+);
+
+const cardTextStyle = TextStyle(
+  color: Colors.black,
 );
 
 const primaryColor = Color(0xFF009688);

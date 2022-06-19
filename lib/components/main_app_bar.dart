@@ -18,11 +18,11 @@ class MainAppBar extends StatelessWidget {
               children: [
                 Text(
                   '서울',
-                  style: defaultTestStyle,
+                  style: defaultTextStyle,
                 ),
                 Text(
                   DateTime.now().toString(),
-                  style: defaultTestStyle.copyWith(fontSize: 20),
+                  style: defaultTextStyle.copyWith(fontSize: 20),
                 ),
                 const SizedBox(height: 20),
                 Image.asset(
@@ -32,13 +32,13 @@ class MainAppBar extends StatelessWidget {
                 const SizedBox(height: 20),
                 Text(
                   '보통',
-                  style: defaultTestStyle.copyWith(
+                  style: defaultTextStyle.copyWith(
                       fontSize: 40, fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   '나쁘지 않네요!',
-                  style: defaultTestStyle.copyWith(
+                  style: defaultTextStyle.copyWith(
                       fontSize: 20, fontWeight: FontWeight.w700),
                 )
               ],

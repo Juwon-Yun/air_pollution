@@ -16,7 +16,7 @@ class MainDrawer extends StatelessWidget {
           DrawerHeader(
               child: Text(
             '지역 선택',
-            style: defaultTestStyle.copyWith(fontSize: 20),
+            style: defaultTextStyle.copyWith(fontSize: 20),
           )),
           // ListView이외에도 넣을 수 있지만 ListView안에 넣는게 더 세팅이 되어씨음
 
