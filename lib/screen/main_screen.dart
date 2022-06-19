@@ -1,3 +1,5 @@
+import 'package:air_pollution/components/main_app_bar.dart';
+import 'package:air_pollution/constants/custom_theme.dart';
 import 'package:flutter/material.dart';
 
 class MainApp extends StatelessWidget {
@@ -5,6 +7,13 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      backgroundColor: primaryColor,
+      body: CustomScrollView(
+        slivers: [
+          MainAppBar(),
+        ],
+      ),
+    );
   }
 }
