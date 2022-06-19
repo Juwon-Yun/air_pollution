@@ -11,34 +11,38 @@ class MainAppBar extends StatelessWidget {
       expandedHeight: 500,
       flexibleSpace: FlexibleSpaceBar(
         background: SafeArea(
-          child: Column(
-            children: [
-              Text(
-                '서울',
-                style: defaultTestStyle,
-              ),
-              Text(
-                DateTime.now().toString(),
-                style: defaultTestStyle.copyWith(fontSize: 20),
-              ),
-              const SizedBox(height: 20),
-              Image.asset(
-                'asset/img/mediocre.png',
-                width: MediaQuery.of(context).size.width * 0.5,
-              ),
-              const SizedBox(height: 20),
-              Text(
-                '보통',
-                style: defaultTestStyle.copyWith(
-                    fontSize: 40, fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '나쁘지 않네요!',
-                style: defaultTestStyle.copyWith(
-                    fontSize: 20, fontWeight: FontWeight.w700),
-              )
-            ],
+          child: Container(
+            // appbar의 원래 높이만큼 설정
+            margin: const EdgeInsets.only(top: kToolbarHeight),
+            child: Column(
+              children: [
+                Text(
+                  '서울',
+                  style: defaultTestStyle,
+                ),
+                Text(
+                  DateTime.now().toString(),
+                  style: defaultTestStyle.copyWith(fontSize: 20),
+                ),
+                const SizedBox(height: 20),
+                Image.asset(
+                  'asset/img/mediocre.png',
+                  width: MediaQuery.of(context).size.width * 0.5,
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  '보통',
+                  style: defaultTestStyle.copyWith(
+                      fontSize: 40, fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '나쁘지 않네요!',
+                  style: defaultTestStyle.copyWith(
+                      fontSize: 20, fontWeight: FontWeight.w700),
+                )
+              ],
+            ),
           ),
         ),
       ),
