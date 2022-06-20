@@ -3,10 +3,7 @@ import 'package:air_pollution/components/hourly_card.dart';
 import 'package:air_pollution/components/main_app_bar.dart';
 import 'package:air_pollution/components/main_drawer.dart';
 import 'package:air_pollution/constants/custom_theme.dart';
-import 'package:air_pollution/constants/data_config.dart';
-import 'package:air_pollution/model/stat_model.dart';
 import 'package:air_pollution/repository/stat_repository.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 

@@ -13,6 +13,8 @@ class StatusModel {
 
   final Color detailFontColor;
 
+  final String imagePath;
+
   final String comment;
 
   // 미세먼지 최소치
@@ -40,6 +42,7 @@ class StatusModel {
       required this.darkColor,
       required this.lightColor,
       required this.detailFontColor,
+      required this.imagePath,
       required this.comment,
       required this.minFineDust,
       required this.minUltraFineDust,
