@@ -1,3 +1,5 @@
+import 'package:air_pollution/components/card_title.dart';
+import 'package:air_pollution/components/main_card.dart';
 import 'package:air_pollution/components/main_stat.dart';
 import 'package:air_pollution/constants/custom_theme.dart';
 import 'package:flutter/material.dart';
@@ -9,36 +11,14 @@ class CategoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 160,
-      child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 8),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(16),
-          ),
-        ),
-        color: lightColor,
-
+      child: MainCard(
         // LayoutBuilder의 constraint에 현재 ListBuilder의 너비와 높이값을 가져올수 있다.
         child: LayoutBuilder(
           builder: (context, constraint) => Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(16.0),
-                      topRight: Radius.circular(16.0)),
-                  color: darkColor,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: Text(
-                    '종류별 통계',
-                    style: defaultTextStyle.copyWith(
-                        fontSize: 14, fontWeight: FontWeight.w700),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
+              CardTitle(
+                title: '종류별 통계',
               ),
               Expanded(
                 child: ListView(
