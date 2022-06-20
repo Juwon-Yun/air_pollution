@@ -4,8 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  initController();
+
   runApp(MaterialApp(
       debugShowCheckedModeBanner: false, home: MainApp(), theme: customTheme));
 }
 
-initApp() {}
+initController() async {
+  await dotenv.load(fileName: ".env");
+}
