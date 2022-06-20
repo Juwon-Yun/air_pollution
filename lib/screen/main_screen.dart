@@ -21,24 +21,7 @@ class _MainAppState extends State<MainApp> {
   @override
   void initState() {
     super.initState();
-    if (serviceKey != null) {
-      fetchData();
-    }
-  }
-
-  fetchData() async {
-    final response = await Dio().get(apiUrl, queryParameters: {
-      'serviceKey': serviceKey,
-      'returnType': 'json',
-      'numOfRows': 30,
-      'pageNo': 1,
-      'itemCode': 'PM10',
-      'dataGubun': 'HOUR',
-      'searchCondition': 'WEEK',
-    });
-    print('--------------fetch---------');
-    print(response.data);
-    print('--------------fetch---------');
+    if (serviceKey != null) {}
   }
 
   @override
