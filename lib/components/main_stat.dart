@@ -11,37 +11,45 @@ class MainStat extends StatelessWidget {
   // 오염 수치
   final String stat;
 
+  // 너비
+  final double width;
+
   const MainStat(
       {Key? key,
       required this.category,
       required this.imgPath,
       required this.level,
-      required this.stat})
+      required this.stat,
+      required this.width})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          category,
-          style: cardTextStyle,
-        ),
-        const SizedBox(height: 8),
-        Image.asset(
-          imgPath,
-          width: 50,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          level,
-          style: cardTextStyle,
-        ),
-        Text(
-          stat,
-          style: cardTextStyle,
-        ),
-      ],
+    return SizedBox(
+      width: width,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            category,
+            style: cardTextStyle,
+          ),
+          const SizedBox(height: 8),
+          Image.asset(
+            imgPath,
+            width: 50,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            level,
+            style: cardTextStyle,
+          ),
+          Text(
+            stat,
+            style: cardTextStyle,
+          ),
+        ],
+      ),
     );
   }
 }
