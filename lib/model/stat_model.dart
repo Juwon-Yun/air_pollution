@@ -35,7 +35,6 @@ class StatModel {
   final double gyeonggi;
   final ItemCode itemCode;
 
-  // JSON형태에서부터 데이터를 받아온다.
   StatModel.fromJson({required Map<String, dynamic> json})
       : daegu = double.parse(json['daegu'] ?? '0'),
         chungnam = double.parse(json['chungnam'] ?? '0'),
