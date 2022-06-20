@@ -4,6 +4,7 @@ import 'package:air_pollution/components/main_app_bar.dart';
 import 'package:air_pollution/components/main_drawer.dart';
 import 'package:air_pollution/constants/custom_theme.dart';
 import 'package:air_pollution/constants/data_config.dart';
+import 'package:air_pollution/model/stat_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -21,7 +22,24 @@ class _MainAppState extends State<MainApp> {
   @override
   void initState() {
     super.initState();
-    if (serviceKey != null) {}
+    if (serviceKey != null) {
+      fetchData(serviceKey!);
+    }
+  }
+
+  fetchData(String serviceKey) async {
+    final response = await Dio().get(apiUrl, queryParameters: {
+      'serviceKey': serviceKey,
+      'returnType': 'json',
+      'numOfRows': 30,
+      'pageNo': 1,
+      'itemCode': 'PM10',
+      'dataGubun': 'HOUR',
+      'searchCondition': 'WEEK',
+    });
+
+    print(response.data['response']['body']['items']
+        .map((item) => StatModel.fromJson(json: item)));
   }
 
   @override

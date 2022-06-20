@@ -3,9 +3,10 @@ import 'package:air_pollution/screen/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-main() {
+main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  initController();
+
+  await initController();
 
   runApp(MaterialApp(
       debugShowCheckedModeBanner: false, home: MainApp(), theme: customTheme));
