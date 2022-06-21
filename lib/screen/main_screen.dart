@@ -3,7 +3,7 @@ import 'package:air_pollution/components/hourly_card.dart';
 import 'package:air_pollution/components/main_app_bar.dart';
 import 'package:air_pollution/components/main_drawer.dart';
 import 'package:air_pollution/constants/custom_theme.dart';
-import 'package:air_pollution/constants/status_level.dart';
+import 'package:air_pollution/constants/data_config.dart';
 import 'package:air_pollution/model/stat_model.dart';
 import 'package:air_pollution/repository/stat_repository.dart';
 import 'package:air_pollution/utils/data_utils.dart';
@@ -19,6 +19,7 @@ class MainApp extends StatefulWidget {
 
 class _MainAppState extends State<MainApp> {
   String? serviceKey = dotenv.env['SERVICE_KEY'];
+  String region = regions[0];
 
   Future<List<StatModel>> fetchData(String serviceKey) async {
     return await StatRepository.fetchData(serviceKey);
@@ -28,7 +29,15 @@ class _MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primaryColor,
-      drawer: MainDrawer(),
+      drawer: MainDrawer(
+        onRegionTap: (String region) {
+          setState(() {
+            this.region = region;
+          });
+          Navigator.of(context).pop();
+        },
+        selectedRegion: region,
+      ),
       body: SafeArea(
         child: FutureBuilder<List<StatModel>>(
             future: fetchData(serviceKey!),
@@ -56,6 +65,7 @@ class _MainAppState extends State<MainApp> {
                   MainAppBar(
                     stat: recentStat,
                     status: status,
+                    region: region,
                   ),
                   // Sliver 안에 일반 Widget도 사용하게 해준다.
                   SliverToBoxAdapter(

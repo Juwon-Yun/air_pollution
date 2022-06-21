@@ -1,11 +1,16 @@
 import 'package:air_pollution/constants/custom_theme.dart';
+import 'package:air_pollution/constants/data_config.dart';
 import 'package:flutter/material.dart';
 
-// temp region row data
-const regions = ['서울', '경기', '대구', '충남', '인천', '대전', '경북', '제주', '충북'];
+typedef OnRegionTap = void Function(String region);
 
 class MainDrawer extends StatelessWidget {
-  const MainDrawer({Key? key}) : super(key: key);
+  final OnRegionTap onRegionTap;
+  final String selectedRegion;
+
+  const MainDrawer(
+      {Key? key, required this.onRegionTap, required this.selectedRegion})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +23,7 @@ class MainDrawer extends StatelessWidget {
             '지역 선택',
             style: defaultTextStyle.copyWith(fontSize: 20),
           )),
-          // ListView이외에도 넣을 수 있지만 ListView안에 넣는게 더 세팅이 되어씨음
+          // ListView이외에도 넣을 수 있지만 ListView안에 넣는게 더 세팅이 되어있음
 
           // spread operator 로 List 를 하나씩 뿌려준다.
           // .. -> cascade operator
@@ -27,8 +32,10 @@ class MainDrawer extends StatelessWidget {
                     tileColor: Colors.white,
                     selectedTileColor: lightColor,
                     selectedColor: Colors.black,
-                    selected: e == '서울',
-                    onTap: () {},
+                    selected: e == selectedRegion,
+                    onTap: () {
+                      onRegionTap(e);
+                    },
                     title: Text(e),
                   ))
               .toList(),
