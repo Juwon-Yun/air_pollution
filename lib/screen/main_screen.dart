@@ -6,6 +6,7 @@ import 'package:air_pollution/constants/custom_theme.dart';
 import 'package:air_pollution/constants/status_level.dart';
 import 'package:air_pollution/model/stat_model.dart';
 import 'package:air_pollution/repository/stat_repository.dart';
+import 'package:air_pollution/utils/data_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -47,9 +48,8 @@ class _MainAppState extends State<MainApp> {
               List<StatModel> stats = snapshot.data!;
               StatModel recentStat = stats[0];
 
-              final status = statusLevel
-                  .where((element) => element.minFineDust < recentStat.seoul)
-                  .last;
+              final status = DataUtils.getCurrentStatusFromItemCodeAndValue(
+                  value: recentStat.seoul, itemCode: ItemCode.PM10);
 
               return CustomScrollView(
                 slivers: [

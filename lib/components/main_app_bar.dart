@@ -1,6 +1,7 @@
 import 'package:air_pollution/constants/custom_theme.dart';
 import 'package:air_pollution/model/stat_model.dart';
 import 'package:air_pollution/model/status_model.dart';
+import 'package:air_pollution/utils/data_utils.dart';
 import 'package:flutter/material.dart';
 
 class MainAppBar extends StatelessWidget {
@@ -27,7 +28,7 @@ class MainAppBar extends StatelessWidget {
                   style: defaultTextStyle,
                 ),
                 Text(
-                  getTimeFormat(dateTime: stat.dataTime),
+                  DataUtils.getTimeFormat(dateTime: stat.dataTime),
                   style: defaultTextStyle.copyWith(fontSize: 20),
                 ),
                 const SizedBox(height: 20),
@@ -53,9 +54,5 @@ class MainAppBar extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String getTimeFormat({required DateTime dateTime}) {
-    return '${dateTime.year}-${dateTime.month}-${dateTime.day} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
 }
