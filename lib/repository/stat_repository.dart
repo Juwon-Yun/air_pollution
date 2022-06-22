@@ -14,6 +14,7 @@ class StatRepository {
       'dataGubun': 'HOUR',
       'searchCondition': 'WEEK',
     });
+    print(response.data);
     return response.data['response']['body']['items']
         .map<StatModel>((item) => StatModel.fromJson(json: item))
         .toList();

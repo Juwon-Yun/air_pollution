@@ -13,7 +13,10 @@ main() async {
   await initController();
 
   runApp(MaterialApp(
-      debugShowCheckedModeBanner: false, home: MainApp(), theme: customTheme));
+    debugShowCheckedModeBanner: false,
+    home: MainApp(),
+    theme: customTheme,
+  ));
 }
 
 initController() async {

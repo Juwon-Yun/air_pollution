@@ -29,6 +29,9 @@ class _MainAppState extends State<MainApp> {
     super.initState();
 
     scrollController.addListener(scrollListener);
+    if (serviceKey != null) {
+      fetchData(serviceKey!);
+    }
   }
 
   @override
@@ -39,7 +42,19 @@ class _MainAppState extends State<MainApp> {
   }
 
   Future<void> fetchData(String serviceKey) async {
-    // Map<ItemCode, List<StatModel>> stats = {};
+    final now = DateTime.now();
+    final fetchTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      now.hour,
+    );
+
+    final box = Hive.box<StatModel>(ItemCode.PM10.name);
+    final recentDate = box.values.last;
+
+    // 년월일 비교
+    if (recentDate.dataTime.isAtSameMomentAs(fetchTime)) return;
 
     List<Future> futures = [];
 
@@ -61,6 +76,13 @@ class _MainAppState extends State<MainApp> {
 
       for (StatModel stat in value) {
         box.put(stat.dataTime.toString(), stat);
+      }
+
+      final allKeys = box.keys.toList();
+
+      if (allKeys.length > 24) {
+        final deleteKeys = allKeys.sublist(0, allKeys.length - 24);
+        box.deleteAll(deleteKeys);
       }
     }
   }
@@ -87,8 +109,6 @@ class _MainAppState extends State<MainApp> {
             value: recentStat.getLevelFromRegion(region),
             itemCode: ItemCode.PM10,
           );
-          // PM10
-          // box.value.toList().last
 
           return Scaffold(
             drawer: MainDrawer(
