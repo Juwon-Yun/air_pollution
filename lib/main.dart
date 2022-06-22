@@ -28,6 +28,6 @@ initController() async {
   await Hive.openBox(testBox);
 
   for (ItemCode itemCode in ItemCode.values) {
-    await Hive.openBox(itemCode.name);
+    await Hive.openBox<StatModel>(itemCode.name);
   }
 }

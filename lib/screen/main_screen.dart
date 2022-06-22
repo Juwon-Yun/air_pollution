@@ -9,6 +9,7 @@ import 'package:air_pollution/repository/stat_repository.dart';
 import 'package:air_pollution/utils/data_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class MainApp extends StatefulWidget {
   const MainApp({Key? key}) : super(key: key);
@@ -39,19 +40,18 @@ class _MainAppState extends State<MainApp> {
   }
 
   Future<Map<ItemCode, List<StatModel>>> fetchData(String serviceKey) async {
-    Map<ItemCode, List<StatModel>> stats = {};
+    // Map<ItemCode, List<StatModel>> stats = {};
 
     List<Future> futures = [];
 
     //병렬로 비동기 요청하기
     for (ItemCode itemCode in ItemCode.values) {
       futures.add(StatRepository.fetchData(serviceKey, itemCode: itemCode));
-
-      // final statModels =
-      //     await StatRepository.fetchData(serviceKey, itemCode: itemCode);
-      //
-      // stats.addAll({itemCode: statModels});
     }
+    // final statModels =
+    //     await StatRepository.fetchData(serviceKey, itemCode: itemCode);
+    //
+    // stats.addAll({itemCode: statModels});
 
     // 요청은 한번에 다 보내고
     // 모든 응답이 도착할때까지 block operation한다.
@@ -62,10 +62,26 @@ class _MainAppState extends State<MainApp> {
       final key = ItemCode.values[i];
       final value = results[i];
 
-      stats.addAll({key: value});
+      final box = Hive.box<StatModel>(key.name);
+
+      for (StatModel stat in value) {
+        box.put(stat.dataTime.toString(), stat);
+      }
+
+      // stats.addAll({key: value});
     }
 
-    return stats;
+    // return stats;
+    return ItemCode.values.fold<Map<ItemCode, List<StatModel>>>({},
+        (prev, curr) {
+      final box = Hive.box<StatModel>(curr.name);
+
+      prev.addAll({
+        curr: box.values.toList(),
+      });
+
+      return prev;
+    });
   }
 
   scrollListener() {
