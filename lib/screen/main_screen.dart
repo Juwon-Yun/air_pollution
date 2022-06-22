@@ -6,6 +6,7 @@ import 'package:air_pollution/constants/data_config.dart';
 import 'package:air_pollution/model/stat_model.dart';
 import 'package:air_pollution/repository/stat_repository.dart';
 import 'package:air_pollution/utils/data_utils.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -42,48 +43,57 @@ class _MainAppState extends State<MainApp> {
   }
 
   Future<void> fetchData(String serviceKey) async {
-    final now = DateTime.now();
-    final fetchTime = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      now.hour,
-    );
+    try {
+      final now = DateTime.now();
+      final fetchTime = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        now.hour,
+      );
 
-    final box = Hive.box<StatModel>(ItemCode.PM10.name);
-    final recentDate = box.values.last;
+      final box = Hive.box<StatModel>(ItemCode.PM10.name);
+      final recentDate = box.values.last;
 
-    // 년월일 비교
-    if (recentDate.dataTime.isAtSameMomentAs(fetchTime)) return;
+      // 년월일 비교
+      if (recentDate.dataTime.isAtSameMomentAs(fetchTime)) return;
 
-    List<Future> futures = [];
+      List<Future> futures = [];
 
-    //병렬로 비동기 요청하기
-    for (ItemCode itemCode in ItemCode.values) {
-      futures.add(StatRepository.fetchData(serviceKey, itemCode: itemCode));
-    }
-
-    // 요청은 한번에 다 보내고
-    // 모든 응답이 도착할때까지 block operation한다.
-    // goroutine -> channel 같음
-    final results = await Future.wait(futures);
-
-    for (int i = 0; i < results.length; i++) {
-      final key = ItemCode.values[i];
-      final value = results[i];
-
-      final box = Hive.box<StatModel>(key.name);
-
-      for (StatModel stat in value) {
-        box.put(stat.dataTime.toString(), stat);
+      //병렬로 비동기 요청하기
+      for (ItemCode itemCode in ItemCode.values) {
+        futures.add(StatRepository.fetchData(serviceKey, itemCode: itemCode));
       }
 
-      final allKeys = box.keys.toList();
+      // 요청은 한번에 다 보내고
+      // 모든 응답이 도착할때까지 block operation한다.
+      // goroutine -> channel 같음
+      final results = await Future.wait(futures);
 
-      if (allKeys.length > 24) {
-        final deleteKeys = allKeys.sublist(0, allKeys.length - 24);
-        box.deleteAll(deleteKeys);
+      for (int i = 0; i < results.length; i++) {
+        final key = ItemCode.values[i];
+        final value = results[i];
+
+        final box = Hive.box<StatModel>(key.name);
+
+        for (StatModel stat in value) {
+          box.put(stat.dataTime.toString(), stat);
+        }
+
+        final allKeys = box.keys.toList();
+
+        if (allKeys.length > 24) {
+          final deleteKeys = allKeys.sublist(0, allKeys.length - 24);
+          box.deleteAll(deleteKeys);
+        }
       }
+    } on DioError catch (error) {
+      // 요청이 안들어갔을 떄 snack bar
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+        '인터넷 연결이 원활하지 않습니다.',
+        textAlign: TextAlign.center,
+      )));
     }
   }
 
@@ -124,45 +134,50 @@ class _MainAppState extends State<MainApp> {
             ),
             body: Container(
               color: status.primaryColor,
-              child: CustomScrollView(
-                controller: scrollController,
-                slivers: [
-                  MainAppBar(
-                    isExpanded: isExpanded,
-                    stat: recentStat,
-                    status: status,
-                    region: region,
-                    dateTime: recentStat.dataTime,
-                  ),
-                  // Sliver 안에 일반 Widget도 사용하게 해준다.
-                  SliverToBoxAdapter(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        CategoryCard(
-                          region: region,
-                          darkColor: status.darkColor,
-                          lightColor: status.lightColor,
-                        ),
-                        const SizedBox(height: 16),
-                        ...ItemCode.values
-                            .map((itemCode) => Padding(
-                                  padding: const EdgeInsets.only(bottom: 16),
-                                  child: HourlyCard(
-                                    darkColor: status.darkColor,
-                                    lightColor: status.lightColor,
-                                    region: region,
-                                    itemCode: itemCode,
-                                  ),
-                                ))
-                            .toList(),
-                        const SizedBox(
-                          height: 16,
-                        )
-                      ],
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  await fetchData(serviceKey!);
+                },
+                child: CustomScrollView(
+                  controller: scrollController,
+                  slivers: [
+                    MainAppBar(
+                      isExpanded: isExpanded,
+                      stat: recentStat,
+                      status: status,
+                      region: region,
+                      dateTime: recentStat.dataTime,
                     ),
-                  )
-                ],
+                    // Sliver 안에 일반 Widget도 사용하게 해준다.
+                    SliverToBoxAdapter(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          CategoryCard(
+                            region: region,
+                            darkColor: status.darkColor,
+                            lightColor: status.lightColor,
+                          ),
+                          const SizedBox(height: 16),
+                          ...ItemCode.values
+                              .map((itemCode) => Padding(
+                                    padding: const EdgeInsets.only(bottom: 16),
+                                    child: HourlyCard(
+                                      darkColor: status.darkColor,
+                                      lightColor: status.lightColor,
+                                      region: region,
+                                      itemCode: itemCode,
+                                    ),
+                                  ))
+                              .toList(),
+                          const SizedBox(
+                            height: 16,
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           );
