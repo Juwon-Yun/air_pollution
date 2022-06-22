@@ -119,16 +119,23 @@ class _MainAppState extends State<MainApp> {
                           lightColor: status.lightColor,
                         ),
                         const SizedBox(height: 16),
-                        HourlyCard(
-                          darkColor: status.darkColor,
-                          lightColor: status.lightColor,
-                          category: DataUtils.getItemCodeToKrString(
-                              itemCode: ItemCode.PM10),
-                          region: region,
-                          stats: stats[ItemCode.PM10]!,
-                        ),
+                        ...stats.keys.map((itemCode) {
+                          final stat = stats[itemCode]!;
+
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: HourlyCard(
+                              darkColor: status.darkColor,
+                              lightColor: status.lightColor,
+                              category: DataUtils.getItemCodeToKrString(
+                                  itemCode: itemCode),
+                              region: region,
+                              stats: stat,
+                            ),
+                          );
+                        }).toList(),
                         const SizedBox(
-                          height: 32,
+                          height: 16,
                         )
                       ],
                     ),
