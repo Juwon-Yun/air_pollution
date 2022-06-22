@@ -1,9 +1,10 @@
 import 'package:air_pollution/components/card_title.dart';
 import 'package:air_pollution/components/main_card.dart';
 import 'package:air_pollution/components/main_stat.dart';
-import 'package:air_pollution/model/stat_and_status_model.dart';
+import 'package:air_pollution/model/stat_model.dart';
 import 'package:air_pollution/utils/data_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class CategoryCard extends StatelessWidget {
   final String region;
@@ -34,31 +35,32 @@ class CategoryCard extends StatelessWidget {
               ),
               Expanded(
                 child: ListView(
-                  // Horizontal viewport was given unbounded height. -> 높이 지정하지않음.
-                  scrollDirection: Axis.horizontal,
-                  physics: const PageScrollPhysics(),
-                  children: models
-                      .map((model) => MainStat(
-                            category: DataUtils.getItemCodeToKrString(
-                                itemCode: model.statModel.itemCode),
-                            imgPath: model.statusModel.imagePath,
-                            level: model.statusModel.label,
-                            stat:
-                                '${model.statModel.getLevelFromRegion(region)}${DataUtils.getUnitFromItemCode(itemCode: model.statModel.itemCode)}',
-                            width: constraint.maxWidth / 3,
-                          ))
-                      .toList(),
-                  // List.generate(
-                  //     20,
-                  //     (index) => MainStat(
-                  //           category: '미세먼지$index',
-                  //           imgPath: 'asset/img/best.png',
-                  //           level: '최고',
-                  //           stat: '0㎍/㎥',
-                  //           LayoutBuilder의 최대 넓이를 이용해 보여줄 개수를 정한다.
-                  // width: constraint.maxWidth / 3,
-                  // ))
-                ),
+                    // Horizontal viewport was given unbounded height. -> 높이 지정하지않음.
+                    scrollDirection: Axis.horizontal,
+                    physics: const PageScrollPhysics(),
+                    children: ItemCode.values
+                        .map((itemCode) => ValueListenableBuilder<Box>(
+                            valueListenable:
+                                Hive.box<StatModel>(itemCode.name).listenable(),
+                            builder: (context, box, widget) {
+                              final stat =
+                                  box.values.toList().last as StatModel;
+                              final status = DataUtils
+                                  .getCurrentStatusFromItemCodeAndValue(
+                                      value: stat.getLevelFromRegion(region),
+                                      itemCode: itemCode);
+
+                              return MainStat(
+                                category: DataUtils.getItemCodeToKrString(
+                                    itemCode: itemCode),
+                                imgPath: status.imagePath,
+                                level: status.label,
+                                stat:
+                                    '${stat.getLevelFromRegion(region)}${DataUtils.getUnitFromItemCode(itemCode: itemCode)}',
+                                width: constraint.maxWidth / 3,
+                              );
+                            }))
+                        .toList()),
               )
             ],
           ),
