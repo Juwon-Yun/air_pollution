@@ -81,6 +81,7 @@ class _MainAppState extends State<MainApp> {
             Map<ItemCode, List<StatModel>> stats = snapshot.data!;
             StatModel pm10RecentStat = stats[ItemCode.PM10]![0];
 
+            // 미세먼지 최근 데이터의 현재 상태
             final status = DataUtils.getCurrentStatusFromItemCodeAndValue(
                 value: pm10RecentStat.seoul, itemCode: ItemCode.PM10);
 
@@ -114,9 +115,14 @@ class _MainAppState extends State<MainApp> {
                         CategoryCard(
                           region: region,
                           models: filteredByRegion,
+                          darkColor: status.darkColor,
+                          lightColor: status.lightColor,
                         ),
                         const SizedBox(height: 16),
-                        HourlyCard(),
+                        HourlyCard(
+                          darkColor: status.darkColor,
+                          lightColor: status.lightColor,
+                        ),
                       ],
                     ),
                   )

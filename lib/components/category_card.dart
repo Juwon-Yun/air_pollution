@@ -7,16 +7,24 @@ import 'package:flutter/material.dart';
 
 class CategoryCard extends StatelessWidget {
   final String region;
+  final Color darkColor;
+  final Color lightColor;
   final List<StatAndStatusModel> models;
 
-  const CategoryCard({Key? key, required this.region, required this.models})
-      : super(key: key);
+  const CategoryCard({
+    Key? key,
+    required this.region,
+    required this.models,
+    required this.darkColor,
+    required this.lightColor,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 160,
       child: MainCard(
+        backgroundColor: lightColor,
         // LayoutBuilder의 constraint에 현재 ListBuilder의 너비와 높이값을 가져올수 있다.
         child: LayoutBuilder(
           builder: (context, constraint) => Column(
@@ -24,12 +32,13 @@ class CategoryCard extends StatelessWidget {
             children: [
               CardTitle(
                 title: '종류별 통계',
+                backgroundColor: darkColor,
               ),
               Expanded(
                 child: ListView(
                   // Horizontal viewport was given unbounded height. -> 높이 지정하지않음.
                   scrollDirection: Axis.horizontal,
-                  physics: PageScrollPhysics(),
+                  physics: const PageScrollPhysics(),
                   children: models
                       .map((model) => MainStat(
                             category: DataUtils.getItemCodeToKrString(

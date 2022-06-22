@@ -2,9 +2,14 @@ import 'package:air_pollution/constants/custom_theme.dart';
 import 'package:flutter/material.dart';
 
 class MainCard extends StatelessWidget {
+  final Color backgroundColor;
   final Widget child;
 
-  const MainCard({Key? key, required this.child}) : super(key: key);
+  const MainCard({
+    Key? key,
+    required this.child,
+    required this.backgroundColor,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +20,7 @@ class MainCard extends StatelessWidget {
           Radius.circular(16),
         ),
       ),
-      color: lightColor,
+      color: backgroundColor,
       child: child,
     );
   }
