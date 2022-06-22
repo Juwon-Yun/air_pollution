@@ -1,11 +1,16 @@
 import 'package:air_pollution/components/card_title.dart';
 import 'package:air_pollution/components/main_card.dart';
 import 'package:air_pollution/components/main_stat.dart';
-import 'package:air_pollution/constants/custom_theme.dart';
+import 'package:air_pollution/model/stat_and_status_model.dart';
+import 'package:air_pollution/utils/data_utils.dart';
 import 'package:flutter/material.dart';
 
 class CategoryCard extends StatelessWidget {
-  const CategoryCard({Key? key}) : super(key: key);
+  final String region;
+  final List<StatAndStatusModel> models;
+
+  const CategoryCard({Key? key, required this.region, required this.models})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,19 +27,31 @@ class CategoryCard extends StatelessWidget {
               ),
               Expanded(
                 child: ListView(
-                    // Horizontal viewport was given unbounded height. -> 높이 지정하지않음.
-                    scrollDirection: Axis.horizontal,
-                    physics: PageScrollPhysics(),
-                    children: List.generate(
-                        20,
-                        (index) => MainStat(
-                              category: '미세먼지$index',
-                              imgPath: 'asset/img/best.png',
-                              level: '최고',
-                              stat: '0㎍/㎥',
-                              // LayoutBuilder의 최대 넓이를 이용해 보여줄 개수를 정한다.
-                              width: constraint.maxWidth / 3,
-                            ))),
+                  // Horizontal viewport was given unbounded height. -> 높이 지정하지않음.
+                  scrollDirection: Axis.horizontal,
+                  physics: PageScrollPhysics(),
+                  children: models
+                      .map((model) => MainStat(
+                            category: DataUtils.getItemCodeToKrString(
+                                itemCode: model.statModel.itemCode),
+                            imgPath: model.statusModel.imagePath,
+                            level: model.statusModel.label,
+                            stat:
+                                '${model.statModel.getLevelFromRegion(region)}${DataUtils.getUnitFromItemCode(itemCode: model.statModel.itemCode)}',
+                            width: constraint.maxWidth / 3,
+                          ))
+                      .toList(),
+                  // List.generate(
+                  //     20,
+                  //     (index) => MainStat(
+                  //           category: '미세먼지$index',
+                  //           imgPath: 'asset/img/best.png',
+                  //           level: '최고',
+                  //           stat: '0㎍/㎥',
+                  //           LayoutBuilder의 최대 넓이를 이용해 보여줄 개수를 정한다.
+                  // width: constraint.maxWidth / 3,
+                  // ))
+                ),
               )
             ],
           ),

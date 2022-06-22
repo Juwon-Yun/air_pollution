@@ -30,9 +30,9 @@ class StatModel {
   final double jeju;
   final double chungbuk;
   final double gyeongnam;
-  final DateTime dataTime;
-  final double dataGubun;
   final double gyeonggi;
+  final double dataGubun;
+  final DateTime dataTime;
   final ItemCode itemCode;
 
   StatModel.fromJson({required Map<String, dynamic> json})
@@ -62,5 +62,42 @@ class StatModel {
       return ItemCode.PM25;
     }
     return ItemCode.values.firstWhere((element) => element.name == raw);
+  }
+
+  double getLevelFromRegion(String region) {
+    // 처음부터 StatModel을 위와같이 작성하면 안되지만 완전 처음한다는 생각으로 작성한다.
+    if (region == '서울') {
+      return seoul;
+    } else if (region == '경기') {
+      return gyeonggi;
+    } else if (region == '대구') {
+      return daegu;
+    } else if (region == '충남') {
+      return chungnam;
+    } else if (region == '인천') {
+      return incheon;
+    } else if (region == '대전') {
+      return daejeon;
+    } else if (region == '경북') {
+      return gyeongbuk;
+    } else if (region == '세종') {
+      return sejong;
+    } else if (region == '광주') {
+      return gwangju;
+    } else if (region == '전북') {
+      return jeonbuk;
+    } else if (region == '강원') {
+      return gangwon;
+    } else if (region == '울산') {
+      return ulsan;
+    } else if (region == '전남') {
+      return jeonnam;
+    } else if (region == '부산') {
+      return busan;
+    } else if (region == '제주') {
+      return jeju;
+    } else {
+      throw Exception('알 수 없는 지역입니다.');
+    }
   }
 }

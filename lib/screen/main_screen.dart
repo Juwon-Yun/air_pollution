@@ -3,6 +3,7 @@ import 'package:air_pollution/components/hourly_card.dart';
 import 'package:air_pollution/components/main_app_bar.dart';
 import 'package:air_pollution/components/main_drawer.dart';
 import 'package:air_pollution/constants/data_config.dart';
+import 'package:air_pollution/model/stat_and_status_model.dart';
 import 'package:air_pollution/model/stat_model.dart';
 import 'package:air_pollution/repository/stat_repository.dart';
 import 'package:air_pollution/utils/data_utils.dart';
@@ -83,6 +84,19 @@ class _MainAppState extends State<MainApp> {
             final status = DataUtils.getCurrentStatusFromItemCodeAndValue(
                 value: pm10RecentStat.seoul, itemCode: ItemCode.PM10);
 
+            final filteredByRegion = stats.keys.map((itemCode) {
+              final value = stats[itemCode];
+              // stats[ItemCode.PM10]![0] 와는 다르게 모든 오염 수치를 다 넣는다.
+              final stat = value![0];
+
+              return StatAndStatusModel(
+                  statusModel: DataUtils.getCurrentStatusFromItemCodeAndValue(
+                      value: stat.getLevelFromRegion(region),
+                      itemCode: itemCode),
+                  statModel: stat,
+                  itemCode: itemCode);
+            }).toList();
+
             return Container(
               color: status.primaryColor,
               child: CustomScrollView(
@@ -97,7 +111,10 @@ class _MainAppState extends State<MainApp> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        CategoryCard(),
+                        CategoryCard(
+                          region: region,
+                          models: filteredByRegion,
+                        ),
                         const SizedBox(height: 16),
                         HourlyCard(),
                       ],
