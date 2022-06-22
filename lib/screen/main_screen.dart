@@ -1,5 +1,5 @@
-import 'package:air_pollution/components/category_card.dart';
-import 'package:air_pollution/components/hourly_card.dart';
+import 'package:air_pollution/container/category_card.dart';
+import 'package:air_pollution/container/hourly_card.dart';
 import 'package:air_pollution/components/main_app_bar.dart';
 import 'package:air_pollution/components/main_drawer.dart';
 import 'package:air_pollution/constants/data_config.dart';
@@ -47,10 +47,6 @@ class _MainAppState extends State<MainApp> {
     for (ItemCode itemCode in ItemCode.values) {
       futures.add(StatRepository.fetchData(serviceKey, itemCode: itemCode));
     }
-    // final statModels =
-    //     await StatRepository.fetchData(serviceKey, itemCode: itemCode);
-    //
-    // stats.addAll({itemCode: statModels});
 
     // 요청은 한번에 다 보내고
     // 모든 응답이 도착할때까지 block operation한다.
@@ -80,6 +76,8 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
+    // valueListenableBuilder는 해당 valueListenable에서 listen하고 있는 데이터가 변경됬을때만
+    // 재렌더링한다. 상당히 효율적이다.
     return ValueListenableBuilder<Box>(
         valueListenable: Hive.box<StatModel>(ItemCode.PM10.name).listenable(),
         builder: (context, box, widget) {
