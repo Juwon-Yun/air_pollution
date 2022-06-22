@@ -122,7 +122,14 @@ class _MainAppState extends State<MainApp> {
                         HourlyCard(
                           darkColor: status.darkColor,
                           lightColor: status.lightColor,
+                          category: DataUtils.getItemCodeToKrString(
+                              itemCode: ItemCode.PM10),
+                          region: region,
+                          stats: stats[ItemCode.PM10]!,
                         ),
+                        const SizedBox(
+                          height: 32,
+                        )
                       ],
                     ),
                   )
