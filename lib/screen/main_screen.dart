@@ -81,7 +81,7 @@ class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<Box>(
-        valueListenable: Hive.box(ItemCode.PM10.name).listenable(),
+        valueListenable: Hive.box<StatModel>(ItemCode.PM10.name).listenable(),
         builder: (context, box, widget) {
           final recentStat = box.values.toList().last as StatModel;
 

@@ -3,6 +3,7 @@ import 'package:air_pollution/components/main_card.dart';
 import 'package:air_pollution/model/stat_model.dart';
 import 'package:air_pollution/utils/data_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class HourlyCard extends StatelessWidget {
   final Color darkColor;
@@ -20,21 +21,27 @@ class HourlyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MainCard(
-      backgroundColor: lightColor,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          CardTitle(
-            title: '시간별 $category',
-            backgroundColor: darkColor,
-          ),
-          Column(
-              children:
-                  stats.map((stat) => renderRow(statModel: stat)).toList()),
-        ],
-      ),
-    );
+    return ValueListenableBuilder<Box>(
+        valueListenable: Hive.box<StatModel>(itemCode.name).listenable(),
+        builder: (context, box, widget) {
+          return MainCard(
+            backgroundColor: lightColor,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                CardTitle(
+                  title:
+                      '시간별 ${DataUtils.getItemCodeToKrString(itemCode: itemCode)}',
+                  backgroundColor: darkColor,
+                ),
+                Column(
+                    children: box.values
+                        .map((stat) => renderRow(statModel: stat))
+                        .toList()),
+              ],
+            ),
+          );
+        });
   }
 
   Widget renderRow({required StatModel statModel}) {
