@@ -21,6 +21,23 @@ class _MainAppState extends State<MainApp> {
   String? serviceKey = dotenv.env['SERVICE_KEY'];
   String region = regions[0];
 
+  bool isExpanded = true;
+  ScrollController scrollController = ScrollController();
+
+  @override
+  initState() {
+    super.initState();
+
+    scrollController.addListener(scrollListener);
+  }
+
+  @override
+  dispose() {
+    scrollController.removeListener(scrollListener);
+    scrollController.dispose();
+    super.dispose();
+  }
+
   Future<Map<ItemCode, List<StatModel>>> fetchData(String serviceKey) async {
     Map<ItemCode, List<StatModel>> stats = {};
 
@@ -49,6 +66,15 @@ class _MainAppState extends State<MainApp> {
     }
 
     return stats;
+  }
+
+  scrollListener() {
+    bool isExpanded = scrollController.offset < 500 - kToolbarHeight;
+    if (isExpanded != this.isExpanded) {
+      setState(() {
+        this.isExpanded = isExpanded;
+      });
+    }
   }
 
   @override
@@ -101,11 +127,14 @@ class _MainAppState extends State<MainApp> {
             return Container(
               color: status.primaryColor,
               child: CustomScrollView(
+                controller: scrollController,
                 slivers: [
                   MainAppBar(
+                    isExpanded: isExpanded,
                     stat: pm10RecentStat,
                     status: status,
                     region: region,
+                    dateTime: pm10RecentStat.dataTime,
                   ),
                   // Sliver 안에 일반 Widget도 사용하게 해준다.
                   SliverToBoxAdapter(
