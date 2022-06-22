@@ -79,52 +79,57 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: MainDrawer(
-        onRegionTap: (String region) {
-          setState(() {
-            this.region = region;
-          });
-          Navigator.of(context).pop();
-        },
-        selectedRegion: region,
-      ),
-      body: FutureBuilder<Map<ItemCode, List<StatModel>>>(
-          future: fetchData(serviceKey!),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return const Center(
+    return FutureBuilder<Map<ItemCode, List<StatModel>>>(
+        future: fetchData(serviceKey!),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const Scaffold(
+              body: Center(
                 child: Text('에러가 있습니다.'),
-              );
-            }
+              ),
+            );
+          }
 
-            if (!snapshot.hasData) {
-              return const Center(
+          if (!snapshot.hasData) {
+            return const Scaffold(
+              body: Center(
                 child: CircularProgressIndicator(),
-              );
-            }
+              ),
+            );
+          }
 
-            Map<ItemCode, List<StatModel>> stats = snapshot.data!;
-            StatModel pm10RecentStat = stats[ItemCode.PM10]![0];
+          Map<ItemCode, List<StatModel>> stats = snapshot.data!;
+          StatModel pm10RecentStat = stats[ItemCode.PM10]![0];
 
-            // 미세먼지 최근 데이터의 현재 상태
-            final status = DataUtils.getCurrentStatusFromItemCodeAndValue(
-                value: pm10RecentStat.seoul, itemCode: ItemCode.PM10);
+          // 미세먼지 최근 데이터의 현재 상태
+          final status = DataUtils.getCurrentStatusFromItemCodeAndValue(
+              value: pm10RecentStat.seoul, itemCode: ItemCode.PM10);
 
-            final filteredByRegion = stats.keys.map((itemCode) {
-              final value = stats[itemCode];
-              // stats[ItemCode.PM10]![0] 와는 다르게 모든 오염 수치를 다 넣는다.
-              final stat = value![0];
+          final filteredByRegion = stats.keys.map((itemCode) {
+            final value = stats[itemCode];
+            // stats[ItemCode.PM10]![0] 와는 다르게 모든 오염 수치를 다 넣는다.
+            final stat = value![0];
 
-              return StatAndStatusModel(
-                  statusModel: DataUtils.getCurrentStatusFromItemCodeAndValue(
-                      value: stat.getLevelFromRegion(region),
-                      itemCode: itemCode),
-                  statModel: stat,
-                  itemCode: itemCode);
-            }).toList();
+            return StatAndStatusModel(
+                statusModel: DataUtils.getCurrentStatusFromItemCodeAndValue(
+                    value: stat.getLevelFromRegion(region), itemCode: itemCode),
+                statModel: stat,
+                itemCode: itemCode);
+          }).toList();
 
-            return Container(
+          return Scaffold(
+            drawer: MainDrawer(
+              onRegionTap: (String region) {
+                setState(() {
+                  this.region = region;
+                });
+                Navigator.of(context).pop();
+              },
+              selectedRegion: region,
+              lightColor: status.lightColor,
+              darkColor: status.darkColor,
+            ),
+            body: Container(
               color: status.primaryColor,
               child: CustomScrollView(
                 controller: scrollController,
@@ -171,8 +176,8 @@ class _MainAppState extends State<MainApp> {
                   )
                 ],
               ),
-            );
-          }),
-    );
+            ),
+          );
+        });
   }
 }
