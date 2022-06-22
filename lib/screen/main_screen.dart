@@ -23,11 +23,28 @@ class _MainAppState extends State<MainApp> {
   Future<Map<ItemCode, List<StatModel>>> fetchData(String serviceKey) async {
     Map<ItemCode, List<StatModel>> stats = {};
 
-    for (ItemCode itemCode in ItemCode.values) {
-      final statModels =
-          await StatRepository.fetchData(serviceKey, itemCode: itemCode);
+    List<Future> futures = [];
 
-      stats.addAll({itemCode: statModels});
+    //병렬로 비동기 요청하기
+    for (ItemCode itemCode in ItemCode.values) {
+      futures.add(StatRepository.fetchData(serviceKey, itemCode: itemCode));
+
+      // final statModels =
+      //     await StatRepository.fetchData(serviceKey, itemCode: itemCode);
+      //
+      // stats.addAll({itemCode: statModels});
+    }
+
+    // 요청은 한번에 다 보내고
+    // 모든 응답이 도착할때까지 block operation한다.
+    // goroutine -> channel 같음
+    final results = await Future.wait(futures);
+
+    for (int i = 0; i < results.length; i++) {
+      final key = ItemCode.values[i];
+      final value = results[i];
+
+      stats.addAll({key: value});
     }
 
     return stats;
