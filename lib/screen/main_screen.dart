@@ -40,6 +40,13 @@ class _MainAppState extends State<MainApp> {
   }
 
   @override
+  void didUpdateWidget(covariant MainApp oldWidget) {
+    print('in didUpdateWidget $oldWidget');
+    super.didUpdateWidget(oldWidget);
+    print('in didUpdateWidget $oldWidget');
+  }
+
+  @override
   initState() {
     super.initState();
 
