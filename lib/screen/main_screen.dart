@@ -1,12 +1,11 @@
-import 'package:air_pollution/container/category_card.dart';
-import 'package:air_pollution/container/hourly_card.dart';
+import 'package:air_pollution/containers/category_card.dart';
+import 'package:air_pollution/containers/hourly_card.dart';
 import 'package:air_pollution/components/main_app_bar.dart';
 import 'package:air_pollution/components/main_drawer.dart';
 import 'package:air_pollution/constants/data_config.dart';
-import 'package:air_pollution/model/stat_model.dart';
-import 'package:air_pollution/repository/stat_repository.dart';
+import 'package:air_pollution/models/stat_model.dart';
 import 'package:air_pollution/utils/data_utils.dart';
-import 'package:dio/dio.dart';
+import 'package:air_pollution/viewModels/stat_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -26,33 +25,12 @@ class _MainAppState extends State<MainApp> {
   ScrollController scrollController = ScrollController();
 
   @override
-  void reassemble() {
-    print('in reassemble');
-    super.reassemble();
-    print('in reassemble');
-  }
-
-  @override
-  void didChangeDependencies() {
-    print('in didChangeDependencies');
-    super.didChangeDependencies();
-    print('in didChangeDependencies');
-  }
-
-  @override
-  void didUpdateWidget(covariant MainApp oldWidget) {
-    print('in didUpdateWidget $oldWidget');
-    super.didUpdateWidget(oldWidget);
-    print('in didUpdateWidget $oldWidget');
-  }
-
-  @override
   initState() {
     super.initState();
 
     scrollController.addListener(scrollListener);
     if (serviceKey != null) {
-      fetchData(serviceKey!);
+      StatViewModel.fetchPollution(serviceKey: serviceKey!, context: context);
     }
   }
 
@@ -61,60 +39,6 @@ class _MainAppState extends State<MainApp> {
     scrollController.removeListener(scrollListener);
     scrollController.dispose();
     super.dispose();
-  }
-
-  Future<void> fetchData(String serviceKey) async {
-    try {
-      final now = DateTime.now();
-      final fetchTime = DateTime(
-        now.year,
-        now.month,
-        now.day,
-        now.hour,
-      );
-
-      final box = Hive.box<StatModel>(ItemCode.PM10.name);
-
-      if (box.values.isNotEmpty &&
-          box.values.last.dataTime.isAtSameMomentAs(fetchTime)) return;
-
-      List<Future> futures = [];
-
-      //병렬로 비동기 요청하기
-      for (ItemCode itemCode in ItemCode.values) {
-        futures.add(StatRepository.fetchData(serviceKey, itemCode: itemCode));
-      }
-
-      // 요청은 한번에 다 보낸뒤
-      // 모든 응답이 도착할때까지 block operation한다.
-      // goroutine -> channel 같음
-      final results = await Future.wait(futures);
-
-      for (int i = 0; i < results.length; i++) {
-        final itemCode = ItemCode.values[i];
-        final statModel = results[i];
-
-        final box = Hive.box<StatModel>(itemCode.name);
-
-        for (StatModel stat in statModel) {
-          box.put(stat.dataTime.toString(), stat);
-        }
-
-        final allKeys = box.keys.toList();
-
-        if (allKeys.length > 24) {
-          final deleteKeys = allKeys.sublist(0, allKeys.length - 24);
-          box.deleteAll(deleteKeys);
-        }
-      }
-    } on DioError catch (error) {
-      // 요청이 안들어갔을 떄 snack bar
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-        '인터넷 연결이 원활하지 않습니다.',
-        textAlign: TextAlign.center,
-      )));
-    }
   }
 
   scrollListener() {
@@ -163,7 +87,8 @@ class _MainAppState extends State<MainApp> {
               color: pm10Status.primaryColor,
               child: RefreshIndicator(
                 onRefresh: () async {
-                  await fetchData(serviceKey!);
+                  await StatViewModel.fetchPollution(
+                      serviceKey: serviceKey!, context: context);
                 },
                 child: CustomScrollView(
                   controller: scrollController,

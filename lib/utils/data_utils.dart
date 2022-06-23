@@ -1,6 +1,6 @@
 import 'package:air_pollution/constants/status_level.dart';
-import 'package:air_pollution/model/stat_model.dart';
-import 'package:air_pollution/model/status_model.dart';
+import 'package:air_pollution/models/stat_model.dart';
+import 'package:air_pollution/models/status_model.dart';
 
 class DataUtils {
   static String getTimeFormat({required DateTime dateTime}) {

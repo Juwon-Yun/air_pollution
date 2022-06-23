@@ -10,4 +10,6 @@ void main() async {
 
     expect(serviceKey, 'null');
   });
+
+  test('Fetch return a json ', () {});
 }

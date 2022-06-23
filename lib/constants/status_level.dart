@@ -1,4 +1,4 @@
-import 'package:air_pollution/model/status_model.dart';
+import 'package:air_pollution/models/status_model.dart';
 import 'package:flutter/material.dart';
 
 final statusLevel = [

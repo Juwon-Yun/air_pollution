@@ -1,5 +1,5 @@
-import 'package:air_pollution/model/stat_model.dart';
-import 'package:air_pollution/model/status_model.dart';
+import 'package:air_pollution/models/stat_model.dart';
+import 'package:air_pollution/models/status_model.dart';
 
 class StatAndStatusModel {
   final StatusModel statusModel;

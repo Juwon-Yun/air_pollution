@@ -1,7 +1,7 @@
 import 'package:air_pollution/components/card_title.dart';
 import 'package:air_pollution/components/main_card.dart';
 import 'package:air_pollution/constants/fade_animation.dart';
-import 'package:air_pollution/model/stat_model.dart';
+import 'package:air_pollution/models/stat_model.dart';
 import 'package:air_pollution/utils/data_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';

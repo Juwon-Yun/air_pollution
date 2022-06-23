@@ -1,5 +1,5 @@
 import 'package:air_pollution/constants/custom_theme.dart';
-import 'package:air_pollution/model/stat_model.dart';
+import 'package:air_pollution/models/stat_model.dart';
 import 'package:air_pollution/screen/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -14,7 +14,7 @@ main() async {
 
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: MainApp(),
+    home: const MainApp(),
     theme: customTheme,
   ));
 }
