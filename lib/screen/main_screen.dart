@@ -26,6 +26,20 @@ class _MainAppState extends State<MainApp> {
   ScrollController scrollController = ScrollController();
 
   @override
+  void reassemble() {
+    print('in reassemble');
+    super.reassemble();
+    print('in reassemble');
+  }
+
+  @override
+  void didChangeDependencies() {
+    print('in didChangeDependencies');
+    super.didChangeDependencies();
+    print('in didChangeDependencies');
+  }
+
+  @override
   initState() {
     super.initState();
 
