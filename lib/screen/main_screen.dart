@@ -53,10 +53,9 @@ class _MainAppState extends State<MainApp> {
       );
 
       final box = Hive.box<StatModel>(ItemCode.PM10.name);
-      final recentDate = box.values.last;
 
-      // 년월일 비교
-      if (recentDate.dataTime.isAtSameMomentAs(fetchTime)) return;
+      if (box.values.isNotEmpty &&
+          box.values.last.dataTime.isAtSameMomentAs(fetchTime)) return;
 
       List<Future> futures = [];
 
@@ -65,18 +64,18 @@ class _MainAppState extends State<MainApp> {
         futures.add(StatRepository.fetchData(serviceKey, itemCode: itemCode));
       }
 
-      // 요청은 한번에 다 보내고
+      // 요청은 한번에 다 보낸뒤
       // 모든 응답이 도착할때까지 block operation한다.
       // goroutine -> channel 같음
       final results = await Future.wait(futures);
 
       for (int i = 0; i < results.length; i++) {
-        final key = ItemCode.values[i];
-        final value = results[i];
+        final itemCode = ItemCode.values[i];
+        final statModel = results[i];
 
-        final box = Hive.box<StatModel>(key.name);
+        final box = Hive.box<StatModel>(itemCode.name);
 
-        for (StatModel stat in value) {
+        for (StatModel stat in statModel) {
           box.put(stat.dataTime.toString(), stat);
         }
 
@@ -113,9 +112,16 @@ class _MainAppState extends State<MainApp> {
     return ValueListenableBuilder<Box>(
         valueListenable: Hive.box<StatModel>(ItemCode.PM10.name).listenable(),
         builder: (context, box, widget) {
+          if (box.values.isEmpty) {
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
           final recentStat = box.values.toList().last as StatModel;
 
-          final status = DataUtils.getCurrentStatusFromItemCodeAndValue(
+          final pm10Status = DataUtils.getCurrentStatusFromItemCodeAndValue(
             value: recentStat.getLevelFromRegion(region),
             itemCode: ItemCode.PM10,
           );
@@ -129,11 +135,11 @@ class _MainAppState extends State<MainApp> {
                 Navigator.of(context).pop();
               },
               selectedRegion: region,
-              lightColor: status.lightColor,
-              darkColor: status.darkColor,
+              lightColor: pm10Status.lightColor,
+              darkColor: pm10Status.darkColor,
             ),
             body: Container(
-              color: status.primaryColor,
+              color: pm10Status.primaryColor,
               child: RefreshIndicator(
                 onRefresh: () async {
                   await fetchData(serviceKey!);
@@ -144,7 +150,7 @@ class _MainAppState extends State<MainApp> {
                     MainAppBar(
                       isExpanded: isExpanded,
                       stat: recentStat,
-                      status: status,
+                      status: pm10Status,
                       region: region,
                       dateTime: recentStat.dataTime,
                     ),
@@ -155,16 +161,16 @@ class _MainAppState extends State<MainApp> {
                         children: [
                           CategoryCard(
                             region: region,
-                            darkColor: status.darkColor,
-                            lightColor: status.lightColor,
+                            darkColor: pm10Status.darkColor,
+                            lightColor: pm10Status.lightColor,
                           ),
                           const SizedBox(height: 16),
                           ...ItemCode.values
                               .map((itemCode) => Padding(
                                     padding: const EdgeInsets.only(bottom: 16),
                                     child: HourlyCard(
-                                      darkColor: status.darkColor,
-                                      lightColor: status.lightColor,
+                                      darkColor: pm10Status.darkColor,
+                                      lightColor: pm10Status.lightColor,
                                       region: region,
                                       itemCode: itemCode,
                                     ),
