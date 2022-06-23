@@ -21,8 +21,12 @@ dependencies:
   # use for http request
   dio: ^4.0.6
 
-  # user for api access key
+  # use for api access key
   flutter_dotenv: ^5.0.2
+
+  # use for animation in stless
+  simple_animations: ^4.1.0
+  supercharged: ^2.1.1
 
 dev_dependencies:
   flutter_test:

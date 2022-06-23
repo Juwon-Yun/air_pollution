@@ -1,4 +1,5 @@
 import 'package:air_pollution/constants/custom_theme.dart';
+import 'package:air_pollution/constants/fade_animation.dart';
 import 'package:air_pollution/model/stat_model.dart';
 import 'package:air_pollution/model/status_model.dart';
 import 'package:air_pollution/utils/data_utils.dart';
@@ -35,34 +36,37 @@ class MainAppBar extends StatelessWidget {
           child: Container(
             // appbar의 원래 높이만큼 설정
             margin: const EdgeInsets.only(top: kToolbarHeight),
-            child: Column(
-              children: [
-                Text(
-                  region,
-                  style: defaultTextStyle,
-                ),
-                Text(
-                  DataUtils.getTimeFormat(dateTime: stat.dataTime),
-                  style: defaultTextStyle.copyWith(fontSize: 20),
-                ),
-                const SizedBox(height: 20),
-                Image.asset(
-                  status.imagePath,
-                  width: MediaQuery.of(context).size.width * 0.5,
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  status.label,
-                  style: defaultTextStyle.copyWith(
-                      fontSize: 40, fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  status.comment,
-                  style: defaultTextStyle.copyWith(
-                      fontSize: 20, fontWeight: FontWeight.w700),
-                )
-              ],
+            child: FadeAnimation(
+              delay: 0.8,
+              child: Column(
+                children: [
+                  Text(
+                    region,
+                    style: defaultTextStyle,
+                  ),
+                  Text(
+                    DataUtils.getTimeFormat(dateTime: stat.dataTime),
+                    style: defaultTextStyle.copyWith(fontSize: 20),
+                  ),
+                  const SizedBox(height: 20),
+                  Image.asset(
+                    status.imagePath,
+                    width: MediaQuery.of(context).size.width * 0.5,
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    status.label,
+                    style: defaultTextStyle.copyWith(
+                        fontSize: 40, fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    status.comment,
+                    style: defaultTextStyle.copyWith(
+                        fontSize: 20, fontWeight: FontWeight.w700),
+                  )
+                ],
+              ),
             ),
           ),
         ),

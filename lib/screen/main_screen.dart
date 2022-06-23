@@ -119,10 +119,10 @@ class _MainAppState extends State<MainApp> {
               ),
             );
           }
-          final recentStat = box.values.toList().last as StatModel;
+          final pm10RecentStat = box.values.toList().last as StatModel;
 
           final pm10Status = DataUtils.getCurrentStatusFromItemCodeAndValue(
-            value: recentStat.getLevelFromRegion(region),
+            value: pm10RecentStat.getLevelFromRegion(region),
             itemCode: ItemCode.PM10,
           );
 
@@ -149,10 +149,10 @@ class _MainAppState extends State<MainApp> {
                   slivers: [
                     MainAppBar(
                       isExpanded: isExpanded,
-                      stat: recentStat,
+                      stat: pm10RecentStat,
                       status: pm10Status,
                       region: region,
-                      dateTime: recentStat.dataTime,
+                      dateTime: pm10RecentStat.dataTime,
                     ),
                     // Sliver 안에 일반 Widget도 사용하게 해준다.
                     SliverToBoxAdapter(
