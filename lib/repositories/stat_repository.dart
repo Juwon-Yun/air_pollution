@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 
 class StatRepository extends StatRepositor {
   @override
-  Future<List<StatModel>> getPollutionWithServiceKey(
+  Future<List<StatModel>> getPollutionWithItemCode(
       {required String serviceKey, required ItemCode itemCode}) async {
     final response = await Dio().get(apiUrl, queryParameters: {
       'serviceKey': serviceKey,

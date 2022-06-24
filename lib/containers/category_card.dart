@@ -21,10 +21,10 @@ class CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 160,
-      child: FadeAnimation(
-        delay: 1,
+    return FadeAnimation(
+      delay: 1,
+      child: SizedBox(
+        height: 160,
         child: MainCard(
           backgroundColor: lightColor,
           // LayoutBuilder의 constraint에 현재 ListBuilder의 너비와 높이값을 가져올수 있다.

@@ -25,7 +25,7 @@ class StatViewModel {
 
       //병렬로 비동기 요청하기
       for (ItemCode itemCode in ItemCode.values) {
-        futures.add(StatRepository().getPollutionWithServiceKey(
+        futures.add(StatRepository().getPollutionWithItemCode(
             serviceKey: serviceKey, itemCode: itemCode));
       }
 
