@@ -24,15 +24,20 @@ class MainDrawer extends StatelessWidget {
       backgroundColor: darkColor,
       child: ListView(
         children: [
-          DrawerHeader(
+          Theme(
+            data: Theme.of(context).copyWith(dividerColor: darkColor),
+            child: DrawerHeader(
+              curve: Curves.linearToEaseOut,
               child: Text(
-            '지역 선택',
-            style: defaultTextStyle.copyWith(fontSize: 20),
-          )),
+                '지역 선택',
+                style: defaultTextStyle.copyWith(fontSize: 20),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.1,
+          ),
           // ListView이외에도 넣을 수 있지만 ListView안에 넣는게 더 세팅이 되어있음
-
-          // spread operator 로 List 를 하나씩 뿌려준다.
-          // .. -> cascade operator
           ...regions
               .map((e) => ListTile(
                     tileColor: Colors.white,

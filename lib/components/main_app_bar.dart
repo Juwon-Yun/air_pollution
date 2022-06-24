@@ -29,7 +29,7 @@ class MainAppBar extends StatelessWidget {
       title: isExpanded
           ? null
           : Text('$region ${DataUtils.getTimeFormat(dateTime: dateTime)}'),
-      expandedHeight: 460,
+      expandedHeight: MediaQuery.of(context).size.height * 0.5,
       centerTitle: true,
       flexibleSpace: FlexibleSpaceBar(
         background: SafeArea(
